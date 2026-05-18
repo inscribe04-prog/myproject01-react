@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { validateAuthInput } from "../utils";
 
-function LoginPage() {
+
+function LoginPage( { onLogin } ) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -12,6 +14,10 @@ function LoginPage() {
     e.preventDefault();
     setError("");
 
+    const emailErr = validateAuthInput(email, 'email');
+    if (!email || !password) { setError('Please fill in all fields'); return; }
+    if (emailErr) { setError(emailErr); return; }
+    
     const res = await fetch("/login", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -21,6 +27,8 @@ function LoginPage() {
     const data = await res.json();
 
     if (data.success) {
+      const user = await fetch("/me").then(r => r.json());
+      onLogin(user);
       navigate("/form");
     } else {
       setError(data.error);

@@ -16,7 +16,7 @@ function RegisterPage() {
     console.log("handleSubmit fired");
     setError("");
 
-    const res = await fetch("/register", {
+    const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ firstname, lastname, email, password }),
