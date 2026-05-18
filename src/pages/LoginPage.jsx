@@ -27,7 +27,7 @@ function LoginPage( { onLogin } ) {
     const data = await res.json();
 
     if (data.success) {
-      const user = await fetch("/me").then(r => r.json());
+      const user = await fetch(`${BASE}/me`).then(r => r.json());
       onLogin(user);
       navigate("/form");
     } else {
