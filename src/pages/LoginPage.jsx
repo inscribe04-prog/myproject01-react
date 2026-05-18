@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { validateAuthInput } from "../utils";
 
-
 function LoginPage( { onLogin } ) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +17,8 @@ function LoginPage( { onLogin } ) {
     if (!email || !password) { setError('Please fill in all fields'); return; }
     if (emailErr) { setError(emailErr); return; }
     
-    const res = await fetch("/login", {
+    const BASE = import.meta.env.VITE_API_URL || '';
+    const res = await fetch( `${BASE}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ email, password }),

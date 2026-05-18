@@ -15,8 +15,9 @@ function RegisterPage() {
     e.preventDefault();
     console.log("handleSubmit fired");
     setError("");
-
-    const res = await fetch("/api/register", {
+    
+    const BASE = import.meta.env.VITE_API_URL || '';
+    const res = await fetch(`${BASE}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ firstname, lastname, email, password }),

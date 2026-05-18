@@ -1,11 +1,13 @@
+const BASE = import.meta.env.VITE_API_URL || '';
+
 const api = {
     async getEntries() {
-        const res = await fetch('/api/entries');
+        const res = await fetch(`${BASE}/api/entries`);
         return res.ok ? await res.json() : [];
     },
 
     async create(data) {
-        const res = await fetch('/api/entries', {
+        const res = await fetch(`${BASE}/api/entries`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(data)
@@ -14,7 +16,7 @@ const api = {
     },
 
     async update(id, data) {
-        const res = await fetch(`/api/entries/${id}`, {
+        const res = await fetch(`${BASE}/api/entries/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(data)
@@ -23,13 +25,13 @@ const api = {
     },
 
     async delete(id) {
-        const res = await fetch(`/api/entries/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${BASE}/api/entries/${id}`, { method: 'DELETE' });
         return res.ok;
     },
 
     async getCurrentUser() {
         try { 
-        const res = await fetch('/me');
+        const res = await fetch(`${BASE}/me`);
         if (!res.ok) return null;
         return await res.json();
         } catch {

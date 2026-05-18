@@ -28,7 +28,9 @@ function FormPage({ user, setUser }) {
   }
 
   async function handleLogout() {
-    await fetch("/logout");
+    
+    const BASE = import.meta.env.VITE_API_URL || '';
+    await fetch(`${BASE}/logout`);
     setUser(null);
     navigate("/");
   }
