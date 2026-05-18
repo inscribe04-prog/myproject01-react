@@ -1,6 +1,5 @@
-const BASE = import.meta.env.VITE_API_URL || '';
+const BASE = import.meta.env.VITE_API_URL || ''; // v2
 console.log("BASE URL:", BASE);
-
 const api = {
     async getEntries() {
         const res = await fetch(`${BASE}/api/entries`);
