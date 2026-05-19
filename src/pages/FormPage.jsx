@@ -7,6 +7,8 @@ import EditModal from "../components/EditModal";
 import api from "../api";
 import schema from "../schema";
 
+
+
 function FormPage({ user, setUser }) {
   const [entries, setEntries] = useState([]);
   const [showTable, setShowTable] = useState(false);
@@ -69,6 +71,7 @@ function FormPage({ user, setUser }) {
 
   return (
     <div>
+      <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', color: '#212529' }}>                 
       <Navbar user={user} onLogout={handleLogout} />
       <div className="container py-4">
         <EntryForm onSuccess={loadEntries} />
@@ -111,6 +114,8 @@ function FormPage({ user, setUser }) {
         />
       </div>
     </div>
+    </div>
+ 
   );
 }
 

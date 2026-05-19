@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api";
+import { validateAuthInput, validatePassword } from "../utils";
 
 function RegisterPage() {
   const [firstname, setFirstname] = useState("");
@@ -14,6 +15,23 @@ function RegisterPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+
+    if (!firstname || !lastname || !email || !password) {
+        setError('Please fill in all fields');
+        return;
+    }
+
+    if (/\s/.test(firstname) || /\s/.test(lastname)) {
+        setError('First and last name cannot contain spaces');
+        return;
+    }
+
+    const emailErr = validateAuthInput(email, 'email');
+    if (emailErr) { setError(emailErr); return; }
+
+    const passErr = validatePassword(password);
+    if (passErr) { setError(passErr); return; }
+
     const res = await api.register(firstname, lastname, email, password);
     const data = await res.json();
     if (data.success) {

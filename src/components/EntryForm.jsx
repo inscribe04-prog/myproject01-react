@@ -26,7 +26,30 @@ function EntryForm({ onSuccess }) {
   function handleChange(e) {
     const { name, value } = e.target;
     const field = schema.fields[name];
+
+    // restrict spaces using schema
+    if (field?.allowSpaces === false && /\s/.test(value)) return;
+    // restrict digits-only fields
+    if (field?.kind === 'digits') {
+        if (value !== '' && !/^\d+$/.test(value)) return;
+    }
+      // restrict name fields
+    if (field?.kind === 'name') { 
+      if (value !== '' && !/^[A-Za-z]+$/.test(value)) return;
+    }
     setForm((prev) => ({ ...prev, [name]: value }));
+
+
+    // live error feedback
+    if (field?.min && value.length > 0 && value.length < field.min) {
+        setErrors((prev) => ({ ...prev, [name]: `${field.label} should be minimum ${field.min} characters` }));
+    } else if (field?.exactLength && value.length > 0 && value.length !== field.exactLength) {
+        setErrors((prev) => ({ ...prev, [name]: `${field.label} must be exactly ${field.exactLength} digits` }));
+    } else if (field?.max !== undefined && Number(value) > field.max) {
+        setErrors((prev) => ({ ...prev, [name]: `${field.label} must be at most ${field.max}` }));
+    } else {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
     
     // counter logic
     if (field?.counterId) {
@@ -97,6 +120,18 @@ function EntryForm({ onSuccess }) {
     setMessage({ text: "❌ Passwords do not match.", type: "danger" });
     return;
     }
+
+
+    // if (/\s/.test(field)) {
+    //     setError('First and last name cannot contain spaces');
+    //     return;
+    // }
+
+
+
+
+
+
   }
 
   const isMinor = Number(form.age) > 0 && Number(form.age) < 18;
@@ -140,7 +175,7 @@ function EntryForm({ onSuccess }) {
       </div>
     );
   }
-  
+
 
   return (
     <div className="card shadow mb-4">
