@@ -41,6 +41,24 @@ function RegisterPage() {
     }
   }
 
+  function handleBlur(e) {
+    const { name, value } = e.target;
+    if (name === 'name') {
+        if (!/^[A-Za-z]+$/.test(value)) {
+            setError('First and last name can only contain letters');
+            return;
+        } else {
+            setError('');
+        }
+    }
+
+    if (name === 'email') setError(validateAuthInput(value, 'email') || '');
+    if (name === 'password') setError(validatePassword(value) || '');
+    // if (name === 'name') setError(validateAuthInput(value, 'name') || '');
+}
+
+
+
   const inputStyle = {
     width: '100%', padding: '0.6rem 1rem',
     background: 'rgba(255,255,255,0.08)',
@@ -118,29 +136,30 @@ function RegisterPage() {
           }}>{error}</div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onBlur={handleBlur}>
+
           <div className="row" style={{ marginBottom: '1rem' }}>
             <div className="col-6">
               <label style={labelStyle}>First Name</label>
-              <input type="text" placeholder="John" value={firstname}
+              <input type="text" placeholder="John" name="name" value={firstname}
                 onChange={(e) => setFirstname(e.target.value)} style={inputStyle} />
             </div>
             <div className="col-6">
               <label style={labelStyle}>Last Name</label>
-              <input type="text" placeholder="Doe" value={lastname}
+              <input type="text" placeholder="Doe" name="name" value={lastname}
                 onChange={(e) => setLastname(e.target.value)} style={inputStyle} />
             </div>
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={labelStyle}>Email</label>
-            <input type="email" placeholder="you@example.com" value={email}
+            <input type="email" placeholder="you@example.com" name="email" value={email}
               onChange={(e) => setEmail(e.target.value)} style={inputStyle} />
           </div>
 
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={labelStyle}>Password</label>
-            <input type="password" placeholder="••••••••" value={password}
+            <input type="password" placeholder="••••••••" name="password" value={password}
               onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
           </div>
 
@@ -155,6 +174,7 @@ function RegisterPage() {
             Create Account
           </button>
         </form>
+
 
         <p style={{ textAlign: 'center', marginTop: '1.5rem',
           color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
