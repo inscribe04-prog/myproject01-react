@@ -74,18 +74,27 @@ function FormPage({ user, setUser }) {
         <EntryForm onSuccess={loadEntries} />
         <h5>Form entries from database:</h5>
         <p>Click the button below to view them</p>
-        <div className="mb-4">
-          <input type="text" className="form-control"
-            placeholder="🔍 Search entries by name..."
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }} />
-        </div>
-        <button className="btn btn-outline-warning w-100 mt-2" onClick={handleToggleTable}>
-          {showTable ? "Hide Table" : "Show Table of Entries"}
+
+    <div className="mt-3">
+      <button className="btn btn-outline-warning w-100" onClick={handleToggleTable}>
+        {showTable ? "Hide Table" : "Show Table"}
+      </button>
+    </div>
+
+    {showTable && (
+      <div className="d-flex justify-content-end align-items-center gap-2 mt-2">
+        <input
+          type="text"
+          className="form-control form-control-sm w-auto"
+          placeholder="🔍 Search by name..."
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+        />
+        <button className="btn btn-outline-info btn-sm" onClick={exportToCSV}>
+          Export CSV
         </button>
-        <button className="btn btn-outline-info w-100 mt-2" onClick={exportToCSV}>
-          Export to CSV
-        </button>
+      </div>
+    )}        
         {showTable && (
           <EntriesTable
             entries={filteredEntries}
