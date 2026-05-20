@@ -20,18 +20,38 @@ function EntryForm({ onSuccess }) {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState({ text: "", type: "" });
   const [counters, setCounters] = useState({});
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [matchMsg, setMatchMsg] = useState({ text: "", color: "" });
 
   function handleChange(e) {
     const { name, value } = e.target;
     const field = schema.fields[name];
+
+    // restrict spaces using schema
+    if (field?.allowSpaces === false && /\s/.test(value)) return;
+    // restrict digits-only fields
+    if (field?.kind === 'digits') {
+        if (value !== '' && !/^\d+$/.test(value)) return;
+    }
+      // restrict name fields
+    if (field?.kind === 'name') { 
+      if (value !== '' && !/^[A-Za-z]+$/.test(value)) return;
+    }
     setForm((prev) => ({ ...prev, [name]: value }));
 
-    // counter logic
-    // const fieldKey = Object.keys(schema.fields).find(
-    //   (k) => schema.fields[k].name === name
-    // );
-    // const field = schema.fields[fieldKey];
 
+    // live error feedback
+    if (field?.min && value.length > 0 && value.length < field.min) {
+        setErrors((prev) => ({ ...prev, [name]: `${field.label} should be minimum ${field.min} characters` }));
+    } else if (field?.exactLength && value.length > 0 && value.length !== field.exactLength) {
+        setErrors((prev) => ({ ...prev, [name]: `${field.label} must be exactly ${field.exactLength} digits` }));
+    } else if (field?.max !== undefined && Number(value) > field.max) {
+        setErrors((prev) => ({ ...prev, [name]: `${field.label} must be at most ${field.max}` }));
+    } else {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+    
+    // counter logic
     if (field?.counterId) {
       const len = value.length;
       const isDigit = field.kind === "digits";
@@ -52,10 +72,27 @@ function EntryForm({ onSuccess }) {
     }
   }
 
+  function handleConfirmChange(e) {
+    const val = e.target.value;
+    setConfirmPassword(val);
+    if (val.length === 0) {
+        setMatchMsg({ text: "", color: "" });
+    } else if (val === form.password) {
+        setMatchMsg({ text: "✅ Passwords match", color: "green" });
+    } else {
+        setMatchMsg({ text: "❌ Does not match", color: "red" });
+    }
+}
+
   async function handleSubmit(e) {
     e.preventDefault();
     setMessage({ text: "", type: "" });
 
+    if (confirmPassword !== form.password) {   // ← first check
+        setMessage({ text: "❌ Passwords do not match.", type: "danger" });
+        return;
+    }
+    
     const errs = validators.getErrors(form);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -78,6 +115,23 @@ function EntryForm({ onSuccess }) {
     } else {
       setMessage({ text: "❌ Save failed.", type: "danger" });
     }
+
+    if (confirmPassword !== form.password) {
+    setMessage({ text: "❌ Passwords do not match.", type: "danger" });
+    return;
+    }
+
+
+    // if (/\s/.test(field)) {
+    //     setError('First and last name cannot contain spaces');
+    //     return;
+    // }
+
+
+
+
+
+
   }
 
   const isMinor = Number(form.age) > 0 && Number(form.age) < 18;
@@ -89,8 +143,7 @@ function EntryForm({ onSuccess }) {
     const error = errors[key];
 
     return (
-      <div className="row mb-3">
-      <div className="col-6" key={key}>
+      <div className="mb-3" key={key}>
         <label className="form-label">{field.label}</label>
         {field.kind === "select" ? (
           <select
@@ -120,33 +173,55 @@ function EntryForm({ onSuccess }) {
         )}
         {error && <div className="invalid-feedback">{error}</div>}
       </div>
-      </div>
     );
   }
+
 
   return (
     <div className="card shadow mb-4">
     <div className="card-body p-4">
       <h5 className="mb-3">React Form Implementation</h5>
       <form onSubmit={handleSubmit}>
-        <div className="row-md-12">
-          {renderField("firstname")}
-          {renderField("lastname")}
-          {renderField("asin")}
-          {renderField("password")}
-          {renderField("email")}
-          {renderField("phone")}
-          {renderField("quantity")}
-          {/* <div className="col-md-6"> */}
-          {/* <div class="row mb-3"> */}
-          {renderField("age")}
-          <div className="col mb-3">
-          {isMinor && renderField("guardian")}
+        
+        <div className="row">
+        <div className="col-md-6">{renderField("firstname")}</div>
+        <div className="col-md-6">{renderField("lastname")}</div>
+      </div>
+
+    {renderField("asin")}
+      <div className="row">
+        <div className="col-md-6">{renderField("password")}</div>
+        <div className="col-md-6">
+          <div className="mb-3">
+            <label className="form-label">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={confirmPassword}
+              onChange={handleConfirmChange}
+            />
+            {matchMsg.text && <small style={{ color: matchMsg.color }}>{matchMsg.text}</small>}
           </div>
-          {renderField("relstatus")}
-          <div className="row mb-3"></div>
-          {isMarried && renderField("spouse")}
-          </div>
+         </div>
+        </div>
+
+      <div className="row">
+        <div className="col-md-6">{renderField("email")}</div>
+        <div className="col-md-6">{renderField("phone")}</div>
+      </div>
+
+      {renderField("quantity")}
+
+      <div className="row">
+        <div className="col-md-6">{renderField("age")}</div>
+        {isMinor && <div className="col-md-6">{renderField("guardian")}</div>}
+      </div>
+
+      <div className="row">
+        <div className="col-md-6">{renderField("relstatus")}</div>
+        {isMarried && <div className="col-md-6">{renderField("spouse")}</div>}
+      </div>
+
           {message.text && (
         <div className={`alert alert-${message.type}`}>{message.text}</div>
       )}

@@ -22,7 +22,7 @@ const schema = {
             editId: 'edit_lastname',
             label: 'Last Name',
             kind: 'name',
-            required: true,
+            required: false,
             min: 3,
             maxLength: 20,
             allowSpaces: false,
@@ -36,7 +36,7 @@ const schema = {
             editId: 'edit_asin',
             label: 'ASIN',
             kind: 'digits',
-            required: true,
+            required: false,
             exactLength: 2,
             maxLength: 2,
             min: 0,
@@ -51,7 +51,7 @@ const schema = {
             editId: 'edit_inpass',
             label: 'Password',
             kind: 'password',
-            required: true,
+            required: false,
             min: 8,
             maxLength: 50,
             allowSpaces: false,
@@ -91,7 +91,7 @@ const schema = {
             editId: 'edit_quantity',
             label: 'Quantity',
             kind: 'digits',
-            required: true,
+            required: false,
             exactLength: 2,
             maxLength: 2,
             min: 0,
@@ -201,4 +201,5 @@ const schema = {
         spouse: 'spouseErr'
     }
 };
+
 export default schema;

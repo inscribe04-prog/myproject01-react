@@ -6,7 +6,7 @@ function NameInput({ label, min }) {
   const color = name.length === 0 ? 'gray' : (name.length < min ? 'red' : 'green');
 
   return (
-    <div className="mb-3">
+    <div className="row-mb-3">
       <label className="form-label">{label}</label>
       <input
         className="form-control"
