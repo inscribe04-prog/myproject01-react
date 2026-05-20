@@ -4,6 +4,12 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import FormPage from "./pages/FormPage";
 import api from "./api";
+import AdminPage from "./pages/AdminPage";
+
+// add this route:
+<Route path="/admin" element={user?.isAdmin ? <AdminPage user={user} setUser={setUser} /> : <Navigate to="/form" />} />
+
+
 
 function App() {
   const [user, setUser] = useState(null);

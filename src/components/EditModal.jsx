@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { useEntryForm } from "../hooks/useEntryForm"; // The hook built
 import schema from "../schema";
-import validators from "../validators";
 import api from "../api";
 
 const initialForm = Object.keys(schema.fields).reduce((acc, key) => {
@@ -9,8 +9,8 @@ const initialForm = Object.keys(schema.fields).reduce((acc, key) => {
 }, {});
 
 function EditModal({ row, onClose, onSuccess }) {
-  const [form, setForm] = useState(initialForm);
-  const [errors, setErrors] = useState({});
+  
+  const { form, setForm, errors, handleChange, isValid } = useEntryForm(initialForm);
   const [saveError, setSaveError] = useState("");
 
   // when row changes, populate the form
@@ -22,21 +22,11 @@ function EditModal({ row, onClose, onSuccess }) {
       return acc;
     }, {});
     setForm(populated);
-    setErrors({});
-  }, [row]);
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-  }
-
+  },[row, setForm]);
+  
   async function handleSave() {
-    const errs = validators.getErrors(form);
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
-    }
+    
+    if (!isValid) return;
 
     const apiData = Object.entries(schema.fields).reduce((acc, [key, field]) => {
       acc[field.name] = form[key];
@@ -142,7 +132,7 @@ function EditModal({ row, onClose, onSuccess }) {
 
           <div className="modal-footer">
             <button className="btn btn-secondary" onClick={onClose}>Close</button>
-            <button className="btn btn-primary" onClick={handleSave}>Save Changes</button>
+            <button className="btn btn-primary" onClick={handleSave} disabled={!isValid}>Save Changes</button>
           </div>
         </div>
       </div>

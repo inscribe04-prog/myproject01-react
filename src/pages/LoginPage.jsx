@@ -22,12 +22,15 @@ function LoginPage({ onLogin }) {
 
     if (data.success) {
       const user = await api.getCurrentUser();
+      console.log("user from /me:", user);
       onLogin(user);
       navigate("/form");
     } else {
       setError(data.error);
     }
   }
+
+  
 
   return (
     <div style={{
