@@ -78,7 +78,10 @@ function FormPage({ user, setUser }) {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', color: '#212529' }}>
       
-      <Navbar user={user} onLogout={handleLogout} />
+      <Navbar Navbar user={user} onLogout={handleLogout} onHome={() => {
+        setShowForm(false);
+        setShowTable(false);
+     }}> </Navbar>
 
       <div style={{ display: 'flex', minHeight: 'calc(100vh - 56px)' }}>
 
@@ -164,7 +167,7 @@ function FormPage({ user, setUser }) {
           )}
 
           {showTable && (
-            <>
+            <div onClick={ (e) => e.stopPropagation () }>
               <div className="d-flex justify-content-end align-items-center gap-2 mb-3">
                 <input
                   type="text"
@@ -185,7 +188,7 @@ function FormPage({ user, setUser }) {
                 onEdit={setEditRow}
                 onDelete={handleDelete}
               />
-            </>
+            </div>
           )}
 
           <EditModal
