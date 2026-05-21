@@ -10,6 +10,14 @@ export default defineConfig({
       '/logout': 'http://localhost:3000',
       '/me': 'http://localhost:3000',
       '/api': 'http://localhost:3000',
+      '/admin': {
+        target: 'http://localhost:3000',
+        bypass: (req) => {
+            if (req.method === 'GET' && !req.url.startsWith('/admin/users')) {
+                return req.url;
+            }
+        }
+    },
       '/register': {
         target: 'http://localhost:3000',
         bypass: (req) => {

@@ -84,7 +84,7 @@ function AdminPage({ user, setUser }) {
                       <button
                         className="btn btn-sm btn-outline-danger"
                         onClick={() => handleDelete(u.id)}
-                        disabled={u.id === user.id}
+                        disabled={u.id === user?.id}
                       >
                         Delete
                       </button>

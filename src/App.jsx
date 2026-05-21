@@ -7,9 +7,6 @@ import api from "./api";
 import AdminPage from "./pages/AdminPage";
 
 // add this route:
-<Route path="/admin" element={user?.isAdmin ? <AdminPage user={user} setUser={setUser} /> : <Navigate to="/form" />} />
-
-
 
 function App() {
   const [user, setUser] = useState(null);
@@ -31,6 +28,7 @@ function App() {
         <Route path="/" element={user ? <Navigate to="/form" /> : <LoginPage onLogin={setUser} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/form" element={user ? <FormPage user={user} setUser={setUser} /> : <Navigate to="/" />} />
+        <Route path="/admin" element={user?.isAdmin ? <AdminPage user={user} setUser={setUser} /> : <Navigate to="/form" />} />
       </Routes>
     </BrowserRouter>
   );
