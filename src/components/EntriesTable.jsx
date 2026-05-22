@@ -1,12 +1,13 @@
 import schema from "../schema";
 import api from "../api";
 
+
 const columns = [
   { label: "ID", key: "id" },
   ...Object.values(schema.fields).map((f) => ({ label: f.label, key: f.db }))
 ];
 
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 10;
 
 function EntriesTable({ entries, currentPage, onPageChange, onEdit, onDelete }) {
   const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
@@ -16,6 +17,8 @@ function EntriesTable({ entries, currentPage, onPageChange, onEdit, onDelete }) 
   if (entries.length === 0) {
     return <p className="text-muted">No entries found.</p>;
   }
+
+
 
   return (
     <>
@@ -42,18 +45,28 @@ function EntriesTable({ entries, currentPage, onPageChange, onEdit, onDelete }) 
                   >
                     Edit
                   </button>
+
                   <button
                     className="btn btn-sm btn-outline-danger"
-                    onClick={() => onDelete(row.id)}
+                    onClick={() => {
+                      if (window.confirm(`Are you sure you want to delete the entry for ${row.firstname}?`)) {
+                      onDelete(row.id)
+                    }
+                  }}
                   >
                     Delete
                   </button>
+                  
+
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+
+
 
       {/* Pagination */}
       <nav className="mt-3">

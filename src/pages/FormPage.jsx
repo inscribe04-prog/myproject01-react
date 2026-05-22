@@ -6,6 +6,7 @@ import EntriesTable from "../components/EntriesTable";
 import EditModal from "../components/EditModal";
 import api from "../api";
 import schema from "../schema";
+import ImportExcel from "../components/ImportExcel";
 
 function FormPage({ user, setUser }) {
   const [entries, setEntries] = useState([]);
@@ -16,6 +17,7 @@ function FormPage({ user, setUser }) {
   const [search, setSearch] = useState("");
   const [editRow, setEditRow] = useState(null);
   const navigate = useNavigate();
+  const [showImport, setShowImport] = useState(false);
 
   async function loadEntries() {
     const data = await api.getEntries();
@@ -150,7 +152,7 @@ function FormPage({ user, setUser }) {
 
         {/* MAIN CONTENT */}
         <div style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}
-        onClick={ () => { setShowForm(false); setShowTable(false); } }
+        onClick={ () => { setShowForm(false); setShowTable(false); setShowImport(false); } }
         >
 
           {!showForm && !showTable && (
@@ -163,6 +165,7 @@ function FormPage({ user, setUser }) {
           {showForm && (
             <div onClick={(e) => e.stopPropagation() }>
             <EntryForm onSuccess={() => { loadEntries(); setShowForm(false); }} />
+            <ImportExcel onSuccess={() => { loadEntries(); }} />
             </div>
           )}
 
@@ -191,11 +194,35 @@ function FormPage({ user, setUser }) {
             </div>
           )}
 
+            {/* {showImport && (
+                <div onClick={(e) => e.stopPropagation()}>
+                    <ImportExcel onSuccess={loadEntries} />
+                </div>
+            )} */}
+
+              {/* <button
+                  onClick={() => { setShowImport(prev => !prev); setShowForm(false); setShowTable(false); }}
+                  style={{
+                        background: showImport ? 'rgba(255,255,255,0.15)' : 'none',
+                        border: 'none', color: 'white',
+                        padding: '0.75rem 1rem',
+                        textAlign: 'left', cursor: 'pointer',
+                        whiteSpace: 'nowrap', width: '100%',
+                        borderLeft: showImport ? '3px solid #198754' : '3px solid transparent'
+                    }}
+                    title="Import Excel"
+                >
+                    📥 {sidebarOpen && 'Import Excel'}
+              </button> */}
+
+          <div onClick={(e) => e.stopPropagation()}>
           <EditModal
             row={editRow}
             onClose={() => setEditRow(null)}
             onSuccess={loadEntries}
           />
+          </div>
+
 
         </div>
       </div>
