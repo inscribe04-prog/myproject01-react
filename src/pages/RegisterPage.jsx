@@ -54,7 +54,6 @@ function RegisterPage() {
 
     if (name === 'email') setError(validateAuthInput(value, 'email') || '');
     if (name === 'password') setError(validatePassword(value) || '');
-    // if (name === 'name') setError(validateAuthInput(value, 'name') || '');
 }
 
 
@@ -124,7 +123,7 @@ function RegisterPage() {
           }}>Logo</div>
           <h2 style={{ color: 'white', fontWeight: '700', margin: 0 }}>Create account</h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-            Join MyProject01
+            Join Project01
           </p>
         </div>
 

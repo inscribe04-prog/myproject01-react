@@ -1,20 +1,18 @@
 import { useState } from "react";
 import schema from "../schema";
 
-export function useEntryForm(initialState) {
-  const [form, setForm] = useState(initialState);
+export function useEntryForm(initialData = {}) {
+  const [form, setForm] = useState(initialData);
   const [errors, setErrors] = useState({});
   const [counters, setCounters] = useState({});
   const [confirmPassword, setConfirmPassword] = useState("");
   const [matchMsg, setMatchMsg] = useState({ text: "", color: "" });
-
-
+  
 
   // Calculate if  are any active errors
   const isValid = Object.values(errors).every(err => err === "" || err === undefined);
 
   function handleChange(e) {
-    // 1. Copy your regex and "live error" logic here from EntryForm
    
     const { name, value } = e.target;
     const field = schema.fields[name];
@@ -43,7 +41,7 @@ export function useEntryForm(initialState) {
         setErrors((prev) => ({ ...prev, [name]: "" }));
     }
 
-    // 2. Add your counter logic here
+    //  counter logic here
     if (field?.counterId) {
       const len = value.length;
       const isDigit = field.kind === "digits";
@@ -57,12 +55,14 @@ export function useEntryForm(initialState) {
         },
       }));
     }
-    // // 3. setForm, setErrors, setCounters accordingly
-    // if (errors[name]) {
-    //   setErrors((prev) => ({ ...prev, [name]: "" }));
-    // }
- 
+    
   }
 
-  return { form, setForm, errors, setErrors, counters, setCounters, handleChange, isValid, confirmPassword, setConfirmPassword, matchMsg, setMatchMsg };
+  const resetForm = () => {
+  setForm(initialData); 
+  setErrors({});           
+};
+
+return { form, setForm, errors, setErrors, counters, setCounters, handleChange, isValid, confirmPassword, setConfirmPassword, matchMsg, setMatchMsg, resetForm };
+
 }

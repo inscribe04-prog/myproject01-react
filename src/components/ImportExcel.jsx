@@ -42,6 +42,10 @@ function ImportExcel({ onSuccess }) {
             <div className="card-body p-4">
                 <h5 className="mb-3">📥 Import Excel</h5>
                 <p className="text-muted">Upload an Excel file (.xlsx) to bulk import entries.</p>
+                <p className="text-bold small">
+                    Note: The file would only be ingested if the column data follows the validation as per the form entries
+                </p>
+                
                 <p className="text-muted small">
                     Expected column order: firstname, lastname, asin, password, email, phone, quantity, age, guardian, relstatus, spousename
                 </p>

@@ -31,6 +31,10 @@ function AdminPage({ user, setUser, adminUsers, setAdminUsers }) {
   }
 
   async function toggleAdmin(id, current) {
+
+    const action = current ? 'Remove Admin' : 'Make Admin';
+    if (!window.confirm(`Are you sure you want to ${action} for this user?`)) return;
+    
     await fetch(`/admin/users/${id}/admin`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

@@ -80,7 +80,7 @@ function LoginPage({ onLogin }) {
           }}>GO</div>
           <h2 style={{ color: 'white', fontWeight: '700', margin: 0 }}>Welcome!</h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-            Sign in to MyProject01
+            Sign in to Project01
           </p>
         </div>
 

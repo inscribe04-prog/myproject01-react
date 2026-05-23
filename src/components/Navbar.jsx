@@ -9,7 +9,7 @@ function Navbar({ user, onLogout, onHome }) {
     textDecorationThickness: '2px',
     textUnderlineOffset: '4px', 
     cursor: 'pointer', color: 'white'}} onClick={onHome} >
-      My Project</Link>
+      Project</Link>
       <div className="d-flex align-items-center gap-3">
         {user && (
           <span className="text-white">

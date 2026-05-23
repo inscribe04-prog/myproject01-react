@@ -7,6 +7,8 @@ import EditModal from "../components/EditModal";
 import api from "../api";
 import schema from "../schema";
 import ImportExcel from "../components/ImportExcel";
+import { toast } from 'react-toastify';
+
 
 function FormPage({ user, setUser }) {
   const [entries, setEntries] = useState([]);
@@ -14,21 +16,33 @@ function FormPage({ user, setUser }) {
   const [showForm, setShowForm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState("");
   const [editRow, setEditRow] = useState(null);
   const navigate = useNavigate();
   const [showImport, setShowImport] = useState(false);
+  const [loadingEntries, setLoadingEntries] = useState(false);
+
 
   async function loadEntries() {
+    
+    setLoadingEntries(true);
     const data = await api.getEntries();
     setEntries(data);
+    setLoadingEntries(false);
   }
 
   async function handleDelete(id) {
-    if (!confirm("Are you sure?")) return;
+    
+    try {
     await api.delete(id);
+    toast.success("Entry deleted!");
     await loadEntries();
-  }
+    }
+    catch (err) {
+    toast.error("Delete failed."); 
+    console.error("Delete error:", err);
+    }
+}
+
 
   async function handleLogout() {
     await api.logout();
@@ -47,12 +61,8 @@ function FormPage({ user, setUser }) {
     setShowTable(false);
   }
 
-  const filteredEntries = entries.filter((row) =>
-    `${row.firstname} ${row.lastname}`.toLowerCase().includes(search.toLowerCase())
-  );
-
   function exportToCSV() {
-    if (entries.length === 0) { alert("No data to export!"); return; }
+    if (entries.length === 0) { toast.error("No data to export!"); return; }
     const columns = [
       { label: "ID", key: "id" },
       ...Object.values(schema.fields).map((f) => ({ label: f.label, key: f.db }))
@@ -164,56 +174,34 @@ function FormPage({ user, setUser }) {
 
           {showForm && (
             <div onClick={(e) => e.stopPropagation() }>
-            <EntryForm onSuccess={() => { loadEntries(); setShowForm(false); }} />
+            <EntryForm onSuccess={() => { loadEntries(); }} />
             <ImportExcel onSuccess={() => { loadEntries(); }} />
             </div>
           )}
 
           {showTable && (
             <div onClick={ (e) => e.stopPropagation () }>
-              <div className="d-flex justify-content-end align-items-center gap-2 mb-3">
-                <input
-                  type="text"
-                  className="form-control form-control-sm w-auto"
-                  placeholder="🔍 Search by name..."
-                  value={search}
-                  onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-                />
-                <button className="btn btn-outline-info btn-sm" onClick={exportToCSV}>
+             <div className="d-flex justify-content-end align-items-center gap-2 mb-3" > 
+                <button className="btn btn-outline-info btn-sm" onClick={exportToCSV}> 
                   Export CSV
                 </button>
               </div>
 
+              {loadingEntries ? (
+                <div className="text-center py-4">
+                  <div className="spinner-border text-secondary" role="status" />
+                </div>
+              ) : (
               <EntriesTable
-                entries={filteredEntries}
+                entries={entries}
                 currentPage={currentPage}
                 onPageChange={setCurrentPage}
                 onEdit={setEditRow}
                 onDelete={handleDelete}
               />
+              )}
             </div>
           )}
-
-            {/* {showImport && (
-                <div onClick={(e) => e.stopPropagation()}>
-                    <ImportExcel onSuccess={loadEntries} />
-                </div>
-            )} */}
-
-              {/* <button
-                  onClick={() => { setShowImport(prev => !prev); setShowForm(false); setShowTable(false); }}
-                  style={{
-                        background: showImport ? 'rgba(255,255,255,0.15)' : 'none',
-                        border: 'none', color: 'white',
-                        padding: '0.75rem 1rem',
-                        textAlign: 'left', cursor: 'pointer',
-                        whiteSpace: 'nowrap', width: '100%',
-                        borderLeft: showImport ? '3px solid #198754' : '3px solid transparent'
-                    }}
-                    title="Import Excel"
-                >
-                    📥 {sidebarOpen && 'Import Excel'}
-              </button> */}
 
           <div onClick={(e) => e.stopPropagation()}>
           <EditModal
@@ -222,8 +210,6 @@ function FormPage({ user, setUser }) {
             onSuccess={loadEntries}
           />
           </div>
-
-
         </div>
       </div>
     </div>

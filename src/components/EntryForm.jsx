@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useEntryForm } from "../hooks/useEntryForm";
 import schema from "../schema";
 import api from "../api";
+import { toast } from 'react-toastify';
+
 
 
 // build initial state using field KEYS not field names
@@ -14,7 +16,7 @@ function EntryForm({ onSuccess }) {
 
   const [message, setMessage] = useState({ text: "", type: "" }); 
 
-  const { form, setForm, errors, setErrors, counters, setCounters, handleChange, isValid, confirmPassword, setConfirmPassword, matchMsg, setMatchMsg } = useEntryForm(initialForm);
+  const { form, setForm, errors, setErrors, counters, setCounters, handleChange, isValid, confirmPassword, setConfirmPassword, matchMsg, setMatchMsg,resetForm } = useEntryForm(initialForm);
 
   
   function handleConfirmChange(e) {
@@ -51,8 +53,20 @@ function EntryForm({ onSuccess }) {
       setConfirmPassword("");
       setMatchMsg({ text: "", color: "" });
       onSuccess();
+
+      setTimeout(() => {
+        setMessage({ text: "", type: "" });
+    }, 4000);
+
+    resetForm(); 
+    if (onSuccess) onSuccess();
+
+
     } else {
       setMessage({ text: "❌ Save failed.", type: "danger" });
+      setTimeout(() => {
+        setMessage({ text: "", type: "" });
+    }, 6000);
     }
 
   }
