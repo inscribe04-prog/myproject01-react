@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useEntryForm } from "../hooks/useEntryForm";
 import schema from "../schema";
-import validators from "../validators";
 import api from "../api";
+import { toast } from 'react-toastify';
+
 
 
 // build initial state using field KEYS not field names
@@ -11,67 +13,12 @@ const initialForm = Object.keys(schema.fields).reduce((acc, key) => {
 }, {});
 
 function EntryForm({ onSuccess }) {
-//   const initialForm = Object.values(schema.fields).reduce((acc, field) => {
-//     acc[field.name] = "";
-//     return acc;
-//   }, {});
 
-  const [form, setForm] = useState(initialForm);
-  const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState({ text: "", type: "" });
-  const [counters, setCounters] = useState({});
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [matchMsg, setMatchMsg] = useState({ text: "", color: "" });
+  const [message, setMessage] = useState({ text: "", type: "" }); 
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    const field = schema.fields[name];
+  const { form, setForm, errors, setErrors, counters, setCounters, handleChange, isValid, confirmPassword, setConfirmPassword, matchMsg, setMatchMsg,resetForm } = useEntryForm(initialForm);
 
-    // restrict spaces using schema
-    if (field?.allowSpaces === false && /\s/.test(value)) return;
-    // restrict digits-only fields
-    if (field?.kind === 'digits') {
-        if (value !== '' && !/^\d+$/.test(value)) return;
-    }
-      // restrict name fields
-    if (field?.kind === 'name') { 
-      if (value !== '' && !/^[A-Za-z]+$/.test(value)) return;
-    }
-    setForm((prev) => ({ ...prev, [name]: value }));
-
-
-    // live error feedback
-    if (field?.min && value.length > 0 && value.length < field.min) {
-        setErrors((prev) => ({ ...prev, [name]: `${field.label} should be minimum ${field.min} characters` }));
-    } else if (field?.exactLength && value.length > 0 && value.length !== field.exactLength) {
-        setErrors((prev) => ({ ...prev, [name]: `${field.label} must be exactly ${field.exactLength} digits` }));
-    } else if (field?.max !== undefined && Number(value) > field.max) {
-        setErrors((prev) => ({ ...prev, [name]: `${field.label} must be at most ${field.max}` }));
-    } else {
-        setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-    
-    // counter logic
-    if (field?.counterId) {
-      const len = value.length;
-      const isDigit = field.kind === "digits";
-      const unit = isDigit ? "digit" : "character";
-      const plural = len >= 2 ? `${unit}s` : unit;
-      setCounters((prev) => ({
-        ...prev,
-        [name]: {
-          text: len === 0 ? "" : `${len} ${plural} entered`,
-          color: len === 0 ? "gray" : len < (field.min || field.exactLength || 1) ? "red" : "green",
-        },
-      }));
-    }
-
-    // clear error on change
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  }
-
+  
   function handleConfirmChange(e) {
     const val = e.target.value;
     setConfirmPassword(val);
@@ -86,19 +33,11 @@ function EntryForm({ onSuccess }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setMessage({ text: "", type: "" });
-
-    if (confirmPassword !== form.password) {   // ← first check
-        setMessage({ text: "❌ Passwords do not match.", type: "danger" });
-        return;
-    }
     
-    const errs = validators.getErrors(form);
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      setMessage({ text: "❌ Please fix the highlighted fields.", type: "danger" });
-      return;
-    }
+    if (!isValid || confirmPassword !== form.password ) {
+    setMessage({ text: "❌ Please fix the highlighted fields.", type: "danger" });
+    return;
+  }
 
     const apiData = Object.entries(schema.fields).reduce((acc, [key , field]) =>{
         acc[field.name] = form[key];
@@ -111,26 +50,24 @@ function EntryForm({ onSuccess }) {
       setForm(initialForm);
       setCounters({});
       setErrors({});
+      setConfirmPassword("");
+      setMatchMsg({ text: "", color: "" });
       onSuccess();
+
+      setTimeout(() => {
+        setMessage({ text: "", type: "" });
+    }, 4000);
+
+    resetForm(); 
+    if (onSuccess) onSuccess();
+
+
     } else {
       setMessage({ text: "❌ Save failed.", type: "danger" });
+      setTimeout(() => {
+        setMessage({ text: "", type: "" });
+    }, 6000);
     }
-
-    if (confirmPassword !== form.password) {
-    setMessage({ text: "❌ Passwords do not match.", type: "danger" });
-    return;
-    }
-
-
-    // if (/\s/.test(field)) {
-    //     setError('First and last name cannot contain spaces');
-    //     return;
-    // }
-
-
-
-
-
 
   }
 
@@ -225,7 +162,7 @@ function EntryForm({ onSuccess }) {
           {message.text && (
         <div className={`alert alert-${message.type}`}>{message.text}</div>
       )}
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" disabled={!isValid}>
           Save Entry
         </button>
       </form>

@@ -22,12 +22,15 @@ function LoginPage({ onLogin }) {
 
     if (data.success) {
       const user = await api.getCurrentUser();
+      console.log("user from /me:", user);
       onLogin(user);
       navigate("/form");
     } else {
       setError(data.error);
     }
   }
+
+  
 
   return (
     <div style={{
@@ -77,7 +80,7 @@ function LoginPage({ onLogin }) {
           }}>GO</div>
           <h2 style={{ color: 'white', fontWeight: '700', margin: 0 }}>Welcome!</h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-            Sign in to MyProject01
+            Sign in to Project01
           </p>
         </div>
 
