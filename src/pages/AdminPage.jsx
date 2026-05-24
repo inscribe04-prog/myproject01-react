@@ -87,6 +87,7 @@ function AdminPage({ user, setUser, adminUsers, setAdminUsers }) {
                     <button
                       className="btn btn-sm btn-outline-primary me-1"
                       onClick={() => toggleAdmin(u.id, u.isAdmin)}
+                      disabled={u.id === user?.id}
                     >
                       {u.isAdmin ? 'Remove Admin' : 'Make Admin'}
                     </button>
