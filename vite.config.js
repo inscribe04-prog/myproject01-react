@@ -9,7 +9,6 @@ export default defineConfig({
       '/login': 'http://localhost:3000',
       '/logout': 'http://localhost:3000',
       '/me': 'http://localhost:3000',
-      '/api': 'http://localhost:3000',
       '/admin': {
         target: 'http://localhost:3000',
         bypass: (req) => {
@@ -23,8 +22,14 @@ export default defineConfig({
         bypass: (req) => {
           if (req.method === 'GET') return req.url;
         }
+      },
+
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
       }
     }
   }
 }
 )
+

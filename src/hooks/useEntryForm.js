@@ -28,7 +28,8 @@ export function useEntryForm(initialData = {}) {
       const nameRegex = field.allowSpaces ? /^[A-Za-z\s]+$/ : /^[A-Za-z]+$/; 
       if (value !== '' && !nameRegex.test(value)) return;
     }
-    
+
+  
     
     setForm((prev) => {
     const updated = { ...prev, [name]: value };

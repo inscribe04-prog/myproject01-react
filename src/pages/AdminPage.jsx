@@ -1,8 +1,9 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../api";
+import DashboardStats from '../components/DashboardStats'; 
+
 
 function AdminPage({ user, setUser, adminUsers, setAdminUsers }) {
   const navigate = useNavigate();
@@ -54,11 +55,23 @@ function AdminPage({ user, setUser, adminUsers, setAdminUsers }) {
   );
 
   return (
+
+    // <div className="container mt-4">
+    //         <h1>Administrative Dashboard</h1>
+    // {
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       <Navbar user={user} onLogout={handleLogout} onHome={() => navigate('/form')} />
-      <div className="container py-4">
-        <h3>Admin Panel</h3>
-        <p className="text-muted">Manage registered users</p>
+
+        <div className="container py-4">
+        <h2 className="mb-4">Administrative Dashboard</h2>
+
+        {/* ADDED: The new stats component */}
+        <DashboardStats />
+
+
+      <div className="user-management-section mt-4 bg-white p-4 shadow-sm rounded">
+          <h3>User Management</h3>
+        <p className="text-muted">Manageaasd registered users</p>
         <div className="table-responsive">
           <table className="table table-striped table-hover align-middle">
             <thead className="table-dark">
@@ -106,6 +119,7 @@ function AdminPage({ user, setUser, adminUsers, setAdminUsers }) {
         </div>
       </div>
     </div>
+  </div>
   );
 }
 
