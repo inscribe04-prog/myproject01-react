@@ -78,6 +78,7 @@ function EntryForm({ onSuccess }) {
     const field = schema.fields[key];
     const counter = counters[key];
     const error = errors[key];
+    console.log(key, field.hint);
 
     return (
       <div className="mb-3" key={key}>
@@ -103,6 +104,7 @@ function EntryForm({ onSuccess }) {
             value={form[key]}
             onChange={handleChange}
             maxLength={field.maxLength}
+            placeholder={field.hint}
           />
         )}
         {counter && (

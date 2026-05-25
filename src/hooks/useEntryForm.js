@@ -24,10 +24,22 @@ export function useEntryForm(initialData = {}) {
         if (value !== '' && !/^\d+$/.test(value)) return;
     }
       // restrict name fields
-    if (field?.kind === 'name') { 
-      if (value !== '' && !/^[A-Za-z]+$/.test(value)) return;
+    if (field?.kind === 'name') {
+      const nameRegex = field.allowSpaces ? /^[A-Za-z\s]+$/ : /^[A-Za-z]+$/; 
+      if (value !== '' && !nameRegex.test(value)) return;
     }
-    setForm((prev) => ({ ...prev, [name]: value }));
+    
+    
+    setForm((prev) => {
+    const updated = { ...prev, [name]: value };
+    if (name === 'relstatus' && value !== 'married') {
+        updated.spouse = '';
+    }
+    if (name === 'age' && Number(value) >= 18) {
+        updated.guardian = '';
+    }
+    return updated;
+});
 
 
     // live error feedback

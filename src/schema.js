@@ -12,7 +12,8 @@ const schema = {
             min: 3,
             maxLength: 20,
             allowSpaces: false,
-            counterId: 'fnameCount'
+            counterId: 'fnameCount',
+            hint: 'Letters only, minimum 3 characters'
         },
 
         lastname: {
@@ -26,7 +27,8 @@ const schema = {
             min: 3,
             maxLength: 20,
             allowSpaces: false,
-            counterId: 'lnameCount'
+            counterId: 'lnameCount',
+            hint: 'Letters only, minimum 3 characters'
         },
 
         asin: {
@@ -41,7 +43,8 @@ const schema = {
             maxLength: 2,
             min: 0,
             max: 99,
-            counterId: 'numCount'
+            counterId: 'numCount',
+            hint: 'Exactly 2 digits (00-99)'
         },
 
         password: {
@@ -55,7 +58,8 @@ const schema = {
             min: 8,
             maxLength: 50,
             allowSpaces: false,
-            counterId: 'pwdCount'
+            counterId: 'pwdCount',
+            hint: 'Min 8 chars, uppercase, lowercase, number and special character (!@#$%^&*)'
         },
 
         email: {
@@ -67,7 +71,8 @@ const schema = {
             kind: 'email',
             required: true,
             maxLength: 254,
-            allowSpaces: false
+            allowSpaces: false,
+            hint: 'Valid email format, no spaces'
         },
 
         phone: {
@@ -81,7 +86,8 @@ const schema = {
             exactLength: 10,
             maxLength: 10,
             regex: /^\d{10}$/,
-            counterId: 'phoneCounter'
+            counterId: 'phoneCounter',
+            hint: 'Exactly 10 digits, no spaces'
         },
 
         quantity: {
@@ -96,8 +102,10 @@ const schema = {
             maxLength: 2,
             min: 0,
             max: 99,
-            counterId: 'quantityCount'
+            counterId: 'quantityCount',
+            hint: 'Exactly 2 digits (00-99)'
         },
+        
 
         age: {
             name: 'age',
@@ -109,7 +117,8 @@ const schema = {
             required: true,
             maxLength: 3,
             min: 0,
-            max: 999
+            max: 999,
+            hint: 'Number between 0 and 999'
         },
 
         guardian: {
@@ -122,7 +131,8 @@ const schema = {
             required: false,
             min: 3,
             maxLength: 20,
-            allowSpaces: false
+            allowSpaces: true,
+            hint: 'Required if age is under 18, letters only'
         },
 
         relstatus: {
@@ -132,7 +142,8 @@ const schema = {
             editId: 'edit_relstatus',
             label: 'Relationship Status',
             kind: 'select',
-            required: true
+            required: true,
+            hint: 'Select your current relationship status'
         },
 
         spouse: {
@@ -145,7 +156,8 @@ const schema = {
             required: false,
             min: 3,
             maxLength: 50,
-            allowSpaces: false
+            allowSpaces: true,
+            hint: 'Required if married, letters only'
         }
     },
 
